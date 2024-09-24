@@ -1,6 +1,6 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { generateJwtToken } from "../utils/jwt.js";
 
 export const registerController = async (req, res) => {
   // Your registration logic here
@@ -49,14 +49,7 @@ export const registerController = async (req, res) => {
         const payload = {
           userId: user._id,
         };
-        // Define JWT secret key
-        const secretKey = process.env.SECRET_KEY;
-
-        // Define JWT algorithm
-        const algorithm = { algorithm: "HS256" };
-
-        // Generate JWT token
-        const token = jwt.sign(payload, secretKey, algorithm);
+        const token = generateJwtToken(payload);
 
         return res.status(201).json({
           success: true,
@@ -70,6 +63,45 @@ export const registerController = async (req, res) => {
     return res
       .status(500)
       .json({ success: false, message: "Failed to register user" });
+  }
+};
+
+export const loginController = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ success: false, message: "All fields are required" });
+  }
+  try {
+    const user = await User.findOne({ email }).select("password");
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
+    }
+    const hashedPassword = user.password;
+    const matchPassword = await bcrypt.compare(password, hashedPassword);
+    if (!matchPassword) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
+    }
+    const payload = {
+      userId: user._id,
+    };
+    const token = generateJwtToken(payload);
+    return res.json({
+      success: true,
+      message: "Login successful",
+      data: token,
+    });
+  } catch (error) {
+    console.log("Failed to login user: ", error);
+    return res.status(500).json({
+      success: false,
+      message: `Failed to login user: ${error}`,
+    });
   }
 };
 
