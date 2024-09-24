@@ -14,7 +14,7 @@ const port = 4000;
 app.use(express.json());
 
 // Middleware to log incoming requests
-app.use("/api/v1/auth",authRouter);
+app.use("/api/v1/auth", authRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
