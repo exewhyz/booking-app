@@ -1,6 +1,7 @@
 import express from "express";
 import authRouter from "./Routes/auth.js";
 import connectToDB from "./db.js";
+import adminRouter from "./Routes/admin/index.js";
 
 // connect to db
 connectToDB();
@@ -15,6 +16,7 @@ app.use(express.json());
 
 // Middleware to log incoming requests
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/admin", adminRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

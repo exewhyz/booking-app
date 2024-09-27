@@ -48,6 +48,7 @@ export const registerController = async (req, res) => {
         // Create JWT payload
         const payload = {
           userId: user._id,
+          userRole: user.role,
         };
         const token = generateJwtToken(payload);
 
@@ -89,6 +90,7 @@ export const loginController = async (req, res) => {
     }
     const payload = {
       userId: user._id,
+      userRole: user.role,
     };
     const token = generateJwtToken(payload);
     return res.json({
