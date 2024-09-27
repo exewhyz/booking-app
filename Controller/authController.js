@@ -75,7 +75,7 @@ export const loginController = async (req, res) => {
       .json({ success: false, message: "All fields are required" });
   }
   try {
-    const user = await User.findOne({ email }).select("password");
+    const user = await User.findOne({ email }).select(["password", "role"]);
     if (!user) {
       return res
         .status(401)

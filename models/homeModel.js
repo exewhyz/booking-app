@@ -41,6 +41,10 @@ const homeSchema = new mongoose.Schema(
       ref: "users",
       required: true,
     },
+    bookedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+    },
   },
   {
     timestamps: true,

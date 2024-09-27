@@ -1,9 +1,20 @@
 import express from "express";
-import { getHomesController } from "../../Controller/homesController.js";
+import {
+  createHomeController,
+  getHomesController,
+} from "../../Controller/homesController.js";
 import verifyUserMiddleware from "../../middleware/verifyUser.js";
+import verifyUserRoleIsAdminMiddleware from "../../middleware/verifyRole.js";
 
 const adminRouter = express.Router();
 
-adminRouter.get("/homes", verifyUserMiddleware, getHomesController)
+adminRouter
+  .get("/homes", verifyUserMiddleware, getHomesController)
+  .post(
+    "/homes",
+    verifyUserMiddleware,
+    verifyUserRoleIsAdminMiddleware,
+    createHomeController
+  );
 
 export default adminRouter;
